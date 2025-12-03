@@ -36,7 +36,7 @@ export default function Sidebar() {
           <ListItemText primary="Comprar/Vender" />
         </ListItemButton>
 
-        <ListItemButton component="a" href="/">
+        <ListItemButton component="a" href="/wallet">
           <ListItemText primary="Wallet" />
         </ListItemButton>
 
