@@ -35,24 +35,29 @@ export interface SellResponse {
   created_at: string;
 }
 
+export interface CryptoInfo {
+  id: number;
+  symbol: string;
+  name: string;
+}
+
 export interface Transaction {
   id: number;
   type: "send" | "receive";
-  cryptocurrency_id: number;
-  symbol: string;
+  cryptocurrency: CryptoInfo;
   amount: string;
-  usd_value: number;
-  from_address: string;
-  to_address: string;
+  usd_value: number | null;
+  from: string;
+  to: string;
   status: "completed" | "pending" | "failed";
-  transaction_hash: string;
-  created_at: string;
+  completed_at: string;
 }
 
 export interface TransactionsResponse {
   message: string;
   transactions: Transaction[];
-  total_count: number;
+  total_count?: number;
+  count?: number;
 }
 
 export interface SendData {
@@ -145,6 +150,23 @@ export const walletService = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Error al enviar criptomonedas');
+    }
+
+    return response.json();
+  },
+
+  async getLatestTransactions(limit: number = 5): Promise<TransactionsResponse> {
+    const response = await fetch(`http://localhost:8000/api/v1/transactions/latest?limit=${limit}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Error al obtener transacciones recientes');
     }
 
     return response.json();

@@ -1,10 +1,57 @@
-import { Container, Typography, Paper, Box } from "@mui/material";
+import { Container, Typography, Paper, Box, CircularProgress, Alert } from "@mui/material";
+import { useEffect, useState } from "react";
 import Header from "../components/layout/header";
 import Sidebar from "../components/layout/sidebar";
 import Card from "../components/card";
 import CryptoTable from "../components/cryptoTable";
+import { walletService, type Transaction } from "../services/walletService";
 
 export default function Home() {
+  const [latestTransactions, setLatestTransactions] = useState<Transaction[]>([]);
+  const [loadingTransactions, setLoadingTransactions] = useState(true);
+  const [errorTransactions, setErrorTransactions] = useState("");
+
+  useEffect(() => {
+    const fetchLatestTransactions = async () => {
+      try {
+        setLoadingTransactions(true);
+        setErrorTransactions("");
+        const data = await walletService.getLatestTransactions(5);
+        setLatestTransactions(data.transactions);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : "Error al cargar transacciones";
+        setErrorTransactions(errorMessage);
+        console.error("Error fetching latest transactions:", err);
+      } finally {
+        setLoadingTransactions(false);
+      }
+    };
+
+    fetchLatestTransactions();
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 60) return `Hace ${diffMins} minuto${diffMins > 1 ? "s" : ""}`;
+    if (diffHours < 24) return `Hace ${diffHours} hora${diffHours > 1 ? "s" : ""}`;
+    if (diffDays < 30) return `Hace ${diffDays} día${diffDays > 1 ? "s" : ""}`;
+
+    return date.toLocaleDateString("es-ES");
+  };
+
+  const getUsdValue = (transaction: Transaction) => {
+    if (transaction.usd_value !== null) {
+      return `$${Math.abs(transaction.usd_value).toFixed(2)}`;
+    }
+    return "N/A";
+  };
+
   const sampleData = {
     price: "$45,876.12",
     volume: "$3.2B",
@@ -41,45 +88,48 @@ export default function Home() {
             Últimos movimientos
           </Typography>
 
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: 3,
-            }}
-          >
-            <Paper
-              sx={{
-                p: 3,
-                flex: "1 1 300px",
-                borderLeft: "5px solid",
-                borderColor: "secondary.main",
-              }}
-            >
-              <Typography fontWeight="600">
-                Movimiento 1 — Compra — 0.005 BTC
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Hace 5 minutos
-              </Typography>
-            </Paper>
+          {errorTransactions && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {errorTransactions}
+            </Alert>
+          )}
 
-            <Paper
+          {loadingTransactions ? (
+            <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : latestTransactions.length === 0 ? (
+            <Paper sx={{ p: 3, textAlign: "center" }}>
+              <Typography color="text.secondary">No hay transacciones recientes</Typography>
+            </Paper>
+          ) : (
+            <Box
               sx={{
-                p: 3,
-                flex: "1 1 300px",
-                borderLeft: "5px solid",
-                borderColor: "warning.main",
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 3,
               }}
             >
-              <Typography fontWeight="600">
-                Movimiento 2 — Venta — 0.2 BTC
-              </Typography>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Hace 2 horas
-              </Typography>
-            </Paper>
-          </Box>
+              {latestTransactions.map((transaction) => (
+                <Paper
+                  key={transaction.id}
+                  sx={{
+                    p: 3,
+                    flex: "1 1 300px",
+                    borderLeft: "5px solid",
+                    borderColor: transaction.type === "receive" ? "success.main" : "warning.main",
+                  }}
+                >
+                  <Typography fontWeight="600">
+                    {transaction.type === "receive" ? "Recibido" : "Enviado"} — {transaction.amount} {transaction.cryptocurrency.symbol}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                    {formatDate(transaction.completed_at)}
+                  </Typography>
+                </Paper>
+              ))}
+            </Box>
+          )}
 
           {/* Tendencias del mercado */}
           <Typography
