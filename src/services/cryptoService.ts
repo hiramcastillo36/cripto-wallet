@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api/v1';
+const API_URL = 'https://cripto-wallet-api-main-7dnzxk.laravel.cloud/api/v1';
 const COINBASE_API_URL = 'https://api.coinbase.com/v2';
 
 export interface Cryptocurrency {

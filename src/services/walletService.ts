@@ -1,6 +1,6 @@
 import { authService } from './authService';
 
-const API_URL = 'http://localhost:8000/api/v1/wallet';
+const API_URL = 'https://cripto-wallet-api-main-7dnzxk.laravel.cloud/api/v1/wallet';
 
 export interface Balance {
   cryptocurrency_id: number;
@@ -156,7 +156,7 @@ export const walletService = {
   },
 
   async getLatestTransactions(limit: number = 5): Promise<TransactionsResponse> {
-    const response = await fetch(`http://localhost:8000/api/v1/transactions/latest?limit=${limit}`, {
+    const response = await fetch(`https://cripto-wallet-api-main-7dnzxk.laravel.cloud/api/v1/transactions/latest?limit=${limit}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
