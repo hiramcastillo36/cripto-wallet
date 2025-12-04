@@ -6,8 +6,8 @@ import {
   Tabs,
   Tab
 } from "@mui/material";
-import Header from "../components/layout/header";
-import Sidebar from "../components/layout/sidebar";
+import AdminHeader from "../components/layout/adminHeader";
+import AdminSidebar from "../components/layout/adminSidebar";
 import AllUsersList from "../components/admin/allUsersList";
 import WalletsCrud from "../components/admin/walletCrud";
 import CryptoCrud from "../components/admin/cryptoCrud";
@@ -19,12 +19,12 @@ export default function AdminDashboard() {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "background.default" }}>
-      {/* Sidebar */}
-      <Sidebar />
+      {/* Admin Sidebar */}
+      <AdminSidebar />
 
       {/* Main */}
       <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
-        <Header />
+        <AdminHeader />
 
         {/* Contenido */}
         <Box sx={{ p: 4 , paddingTop: 15}}>
