@@ -55,10 +55,6 @@ export default function Sidebar() {
           <ListItemText primary="Wallet" />
         </ListItemButton>
 
-        <ListItemButton component="a" href="/ajustes">
-          <ListItemText primary="Ajustes" />
-        </ListItemButton>
-
         {/* Opción de administración solo para admins */}
         {isAdmin && (
           <>
