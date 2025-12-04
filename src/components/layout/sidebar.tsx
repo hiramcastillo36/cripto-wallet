@@ -5,9 +5,24 @@ import {
   ListItemText,
   Typography,
   Box,
+  Divider,
 } from "@mui/material";
+import { useEffect, useState } from "react";
+import { authService } from "../../services/authService";
 
 export default function Sidebar() {
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    // Verificar si el usuario es admin
+    const checkAdmin = () => {
+      const isAdminUser = authService.isAdmin();
+      setIsAdmin(isAdminUser);
+    };
+
+    checkAdmin();
+  }, []);
+
   return (
     <Drawer
       variant="permanent"
@@ -44,9 +59,15 @@ export default function Sidebar() {
           <ListItemText primary="Ajustes" />
         </ListItemButton>
 
-        <ListItemButton component="a" href="/admin">
-          <ListItemText primary="Administración" />
-        </ListItemButton>
+        {/* Opción de administración solo para admins */}
+        {isAdmin && (
+          <>
+            <Divider sx={{ my: 1, bgcolor: "rgba(255, 255, 255, 0.2)" }} />
+            <ListItemButton component="a" href="/admin" sx={{ bgcolor: "rgba(0, 0, 0, 0.1)" }}>
+              <ListItemText primary="Administración" />
+            </ListItemButton>
+          </>
+        )}
       </List>
     </Drawer>
   );

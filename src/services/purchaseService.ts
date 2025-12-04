@@ -1,6 +1,6 @@
 import { authService } from './authService';
 
-const API_URL = 'https://cripto-wallet-api-main-7dnzxk.laravel.cloud/api/v1';
+const API_URL = 'http://localhost:8000/api/v1';
 
 export interface PurchaseData {
   cryptocurrency_id: number;

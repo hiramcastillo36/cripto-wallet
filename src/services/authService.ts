@@ -1,4 +1,4 @@
-const API_URL = 'https://cripto-wallet-api-main-7dnzxk.laravel.cloud/api/v1/auth';
+const API_URL = 'http://localhost:8000/api/v1/auth';
 
 export interface LoginData {
   email: string;
@@ -12,13 +12,16 @@ export interface RegisterData {
   password_confirmation: string;
 }
 
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  is_admin?: boolean;
+}
+
 export interface AuthResponse {
   access_token: string;
-  user?: {
-    id: number;
-    name: string;
-    email: string;
-  };
+  user?: User;
 }
 
 interface APIAuthResponse {
@@ -29,6 +32,7 @@ interface APIAuthResponse {
       id: number;
       name: string;
       email: string;
+      is_admin?: boolean;
     };
     token: string;
     token_type: string;
@@ -107,5 +111,67 @@ export const authService = {
 
   isAuthenticated(): boolean {
     return !!this.getToken();
+  },
+
+  async validateToken(): Promise<boolean> {
+    try {
+      const token = this.getToken();
+
+      if (!token) {
+        return false;
+      }
+
+      const response = await fetch(`${API_URL}/me`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        // Si el token es inválido, limpiarlo
+        this.logout();
+        return false;
+      }
+
+      // Actualizar información del usuario con datos del backend
+      const data = await response.json();
+      if (data.data?.user) {
+        this.setUser(data.data.user);
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error validating token:', error);
+      this.logout();
+      return false;
+    }
+  },
+
+  isAdmin(): boolean {
+    try {
+      const user = this.getUser();
+
+      return user?.is_admin === true || false;
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      return false;
+    }
+  },
+
+  async validateAdmin(): Promise<boolean> {
+    try {
+      const isValid = await this.validateToken();
+      if (!isValid) {
+        return false;
+      }
+
+      return this.isAdmin();
+    } catch (error) {
+      console.error('Error validating admin:', error);
+      return false;
+    }
   },
 };

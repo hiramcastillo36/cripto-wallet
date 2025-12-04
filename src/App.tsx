@@ -6,16 +6,59 @@ import Wallet from './views/wallet';
 import SendBitcoin from './views/send';
 import Login from './views/login';
 import AdminDashboard from './views/admin';
+import ProtectedRoute from './middleware/ProtectedRoute';
+import AdminRoute from './middleware/AdminRoute';
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/buying-selling" element={<Trade />} />
-        <Route path="/wallet" element={<Wallet />} />
-        <Route path="/send" element={<SendBitcoin />} />
+        {/* Rutas públicas */}
         <Route path="/login" element={<Login />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+
+        {/* Rutas protegidas */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Home />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/buying-selling"
+          element={
+            <ProtectedRoute>
+              <Trade />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/wallet"
+          element={
+            <ProtectedRoute>
+              <Wallet />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/send"
+          element={
+            <ProtectedRoute>
+              <SendBitcoin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
