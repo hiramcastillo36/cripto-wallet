@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000/api/v1/auth';
+const API_URL = 'https://cripto-wallet-api-main-7dnzxk.laravel.cloud/api/v1/auth';
 
 export interface LoginData {
   email: string;
