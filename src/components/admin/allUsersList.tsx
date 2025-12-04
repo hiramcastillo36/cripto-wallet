@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
-import { adminService, type User, type UsersListResponse } from "../../services/adminService";
+import { adminService, type User } from "../../services/adminService";
 
 export default function AllUsersList() {
   const [users, setUsers] = useState<User[]>([]);

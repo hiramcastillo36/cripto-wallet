@@ -22,7 +22,7 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import { useEffect, useState } from "react";
-import { adminService, type Wallet, type WalletsListResponse } from "../../services/adminService";
+import { adminService, type Wallet } from "../../services/adminService";
 
 export default function WalletsCrud() {
   const [wallets, setWallets] = useState<Wallet[]>([]);

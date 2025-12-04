@@ -49,12 +49,6 @@ export default function BlockedUsersList() {
     }
   };
 
-  const handleOpenBlockDialog = (userId: number) => {
-    setBlockUserId(userId);
-    setBlockReason("");
-    setBlockDialogOpen(true);
-  };
-
   const handleCloseBlockDialog = () => {
     setBlockDialogOpen(false);
     setBlockUserId(null);

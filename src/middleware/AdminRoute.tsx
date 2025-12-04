@@ -1,5 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { type ReactNode, useEffect, useState } from 'react';
 import { authService } from '../services/authService';
 import { Box, CircularProgress, Alert } from '@mui/material';
 
